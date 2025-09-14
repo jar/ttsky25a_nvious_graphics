@@ -6,7 +6,7 @@
 #include "vga_timings.hpp"
 #include "gif.h"
 
-struct ARGB8888_t { uint8_t b, g, r, a; } __attribute__((packed));
+struct ABGR8888_t { uint8_t r, g, b, a; } __attribute__((packed));
 union VGApinout_t {
 	uint8_t pins;
 	struct { // 6-bit color with sync
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 	}
 
 	vga_timing vga = mode; // Select the VGA timings from the list
-	std::vector<ARGB8888_t> fb(vga.h_active_pixels * vga.v_active_lines);
+	std::vector<ABGR8888_t> fb(vga.h_active_pixels * vga.v_active_lines);
 
 	GifWriter g; // GIF output
 	int delay = ceilf(vga.frame_cycles() / (vga.clock_mhz * 10000.f)); // 100ths of a second
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
 	SDL_Renderer* r = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED);
 	SDL_RenderSetLogicalSize(r, vga.h_active_pixels, vga.v_active_lines);
-	SDL_Texture* t = SDL_CreateTexture(r, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, vga.h_active_pixels, vga.v_active_lines);
+	SDL_Texture* t = SDL_CreateTexture(r, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, vga.h_active_pixels, vga.v_active_lines);
 
 	Verilated::commandArgs(argc, argv);
 	TOP_MODULE *top = new TOP_MODULE;
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
 				uint8_t rr = 85 * (uo_out.r1 << 1 | uo_out.r0);
 				uint8_t gg = 85 * (uo_out.g1 << 1 | uo_out.g0);
 				uint8_t bb = 85 * (uo_out.b1 << 1 | uo_out.b0);
-				ARGB8888_t rgb = { .b = bb, .g = gg, .r = rr };
+				ABGR8888_t rgb = { .r = rr, .g = gg, .b = bb };
 				fb[vnum * vga.h_active_pixels + hnum] = rgb;
 			}
 
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 		}
 
 		SDL_RenderClear(r);
-		SDL_UpdateTexture(t, NULL, fb.data(), vga.h_active_pixels * sizeof(ARGB8888_t));
+		SDL_UpdateTexture(t, NULL, fb.data(), vga.h_active_pixels * sizeof(ABGR8888_t));
 		SDL_RenderCopy(r, t, NULL, NULL);
 		SDL_RenderPresent(r);
 
