@@ -172,8 +172,8 @@ module tt_um_nvious_graphics(
 	wire ex0 = x == 320;
 	wire ex1 = y == x - 80;
 	wire ex2 = y == 559 - x;
-	wire ex3 = y == (x>>1) + 80;
-	wire ex4 = y == 399 - (x>>1);
+	wire ex3 = y == 80 + x / 2;
+	wire ex4 = y == 399 - x / 2;
 	wire ex5 = y == 128 + x / 3;
 	wire ex6 = y == 341 - x / 3;
 	wire ex = (y > 10'd304) & (ex0 | ex1 | ex2 | ex3 | ex4 | ex5 | ex6);
