@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 James Ross
+ * Copyright (c) 2024-2025 James Ross
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -200,7 +200,7 @@ module tt_um_nvious_graphics(
 	wire [5:0] fg = cyan;
 	assign RGB = video_active ? (((a & led[0]) | (b & led[1]) | (c & led[2]) | (d & led[3]) | (e & led[4]) | (f & led[5]) | (g & led[6]) | (h & led[7])) ? fg : eg) : black;
 
-	always @(posedge vsync) begin
+	always @(posedge vsync, negedge rst_n) begin
 		if (~rst_n) begin
 			show <= 0;
 			counter <= 0;
