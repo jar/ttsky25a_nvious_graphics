@@ -2,12 +2,12 @@
 
 # Tiny Tapeout nVious Retro FCX 890 Graphics
 
-![example VGA output](docs/screenshot.png)
+![animated sample output](docs/optimized.gif)
 
-This was an entry into the Tiny Tapeout 08 Demoscene competition. This project
-aims to add retro graphics to dozens of existing projects by intercepting the
-binary output typically sent to the 7-segment LED display and redirecting it to
-a VGA-compatible monitor.
+This was originally an entry into the Tiny Tapeout 08 Demoscene competition.
+This project aims to add retro graphics to dozens of existing projects by
+intercepting the output signal typically sent to the 7-segment LED display and
+redirecting it to a VGA-compatible monitor.
 
 [Read the documentation for project](docs/info.md)
 
