@@ -36,21 +36,21 @@ module tt_um_nvious_graphics(
 
 	reg show;
 	reg [9:0] counter;
-	wire [7:0] led = show ? ui_in : countdown[counter[9:6]];
+	wire [7:0] led = show ? ui_in : countdown[counter[8:5]];
 
 	reg [7:0] countdown[15:0];
 	initial begin
-		countdown[ 0] = 8'b01100111; // 9
-		countdown[ 1] = 8'b01111111; // 8
-		countdown[ 2] = 8'b00000111; // 7
-		countdown[ 3] = 8'b01111101; // 6
-		countdown[ 4] = 8'b01101101; // 5
-		countdown[ 5] = 8'b01100110; // 4
-		countdown[ 6] = 8'b01001111; // 3
-		countdown[ 7] = 8'b01011011; // 2
-		countdown[ 8] = 8'b00000110; // 1
-		countdown[ 9] = 8'b00111111; // 0
-		countdown[10] = 8'b10000000; // .
+		countdown[ 0] = 8'b01110110; // H
+		countdown[ 1] = 8'b01111001; // E
+		countdown[ 2] = 8'b00111000; // L
+		countdown[ 3] = 8'b00111000; // L
+		countdown[ 4] = 8'b00111111; // O
+		countdown[ 5] = 8'b00000000; //
+		countdown[ 6] = 8'b01001111; // W
+		countdown[ 7] = 8'b00111111; // O
+		countdown[ 8] = 8'b01010000; // r
+		countdown[ 9] = 8'b00111000; // L
+		countdown[10] = 8'b01011110; // d
 		countdown[11] = 8'b00000000; // 
 		countdown[12] = 8'b10000000; // .
 		countdown[13] = 8'b00000000; // 
@@ -180,7 +180,7 @@ module tt_um_nvious_graphics(
 
 	wire [5:0] black  = 6'b000000;
 	wire [5:0] star   = 6'b001011;
-	wire [5:0] cyan   = 6'b001111;
+	wire [5:0] cyan   = 6'b011111;
 	wire [5:0] red    = 6'b110001;
 	wire [5:0] orange = 6'b110101;
 	wire [5:0] yellow = 6'b111101;
@@ -191,7 +191,9 @@ module tt_um_nvious_graphics(
 	// background (sky)
 	wire [5:0] bg = (y < 128) ? (gsky ? blue : black) : ((y > 200 && sy1 < 64) ? (gsun ? purple : blue) : (y > sy1) ? black: blue);
 	// c-ground (stars)
-	wire [5:0] cg = ((x[6]^y[6]) & (x[5:0]==32 & y[5:0]==32) & (y < sy1) ) ? star : bg;
+	wire [10:0] zz = y + {3'd0, counter[9:3]};
+	wire _unused = &{zz[10:6]};
+	wire [5:0] cg = ((x[6]^zz[6]) & (x[5:0]==32 & zz[5:0]==32) & (y < sy1) ) ? star : bg;
 	// d-ground (sun)
 	wire [5:0] dg = s ? ((sy1 < 128) ? (gsun ? red : orange) : (gsun ? orange : yellow)) : cg;
 	// e-ground
