@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include <vector>
 #include <cstdint>
 #include <SDL2/SDL.h>
@@ -67,9 +68,8 @@ int main(int argc, char **argv)
 	TOP_MODULE *top = new TOP_MODULE;
 
 	bool quit = false; // Main single frame loop
-	while (!quit && !Verilated::gotFinish()) {
+	for (int frame = 0; !quit && !Verilated::gotFinish(); frame++) {
 		int last_ticks = SDL_GetTicks();
-		static int frame = 0;
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
 			if (e.type == SDL_QUIT) quit = true;
@@ -98,6 +98,7 @@ int main(int argc, char **argv)
 		auto rst_n = k[SDL_SCANCODE_R];
 		static bool rst_init = false;
 		if (!rst_init) { rst_n = rst_init = true; } // reset on first clock cycle
+#if 1
 		uint8_t ui_in = 0;
 		ui_in |= k[SDL_SCANCODE_0] << 0;
 		ui_in |= k[SDL_SCANCODE_1] << 1;
@@ -107,7 +108,28 @@ int main(int argc, char **argv)
 		ui_in |= k[SDL_SCANCODE_5] << 5;
 		ui_in |= k[SDL_SCANCODE_6] << 6;
 		ui_in |= k[SDL_SCANCODE_7] << 7;
-
+#else
+		static uint8_t ui_in = 0;
+		std::map<int, uint8_t> schedule {
+			{  0, 0b01110110}, // H
+			{ 30, 0b01111011}, // e
+			{ 60, 0b00111000}, // L
+			{ 80, 0b00000000}, //
+			{ 90, 0b00111000}, // L
+			{120, 0b01011100}, // o
+			{150, 0b00000000}, //
+			{180, 0b01001111}, // W
+			{210, 0b01011100}, // o
+			{240, 0b01010000}, // r
+			{270, 0b00111000}, // L
+			{300, 0b01011110}, // d
+			{330, 0b00000000}, //
+			{360, 0b10000000}, // .
+			{390, 0b00000000}  //
+		};
+		auto it = schedule.find(frame);
+		if (it != schedule.end()) ui_in = it->second;
+#endif
 		static int hnum = 0;
 		static int vnum = 0;
 		for (int cycle = 0; cycle < vga.frame_cycles(); cycle++) { // Intra-frame verilator cycles
@@ -160,7 +182,7 @@ int main(int argc, char **argv)
 		}
 		if (gif) {
 			GifWriteFrame(&g, (uint8_t*)fb.data(), vga.h_active_pixels, vga.v_active_lines, delay);
-			if (++frame == gif_frames) quit = true;
+			if (frame == gif_frames) quit = true;
 		}
 		if (slow) usleep(250000); // ~4 fps
 
