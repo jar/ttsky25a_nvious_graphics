@@ -8,11 +8,11 @@ display. Potentially, the VSYNC signal could even be connected to the source
 circuit to drive the clock and achieve frame synchronization--call it Tapeout
 Synchronization, or T-SYNC. 
 
-![box art](docs/boxart.jpg)
+![box art](boxart.jpg)
 
 Below is an example of a frame from the VGA (640 x 480 @ 60 FPS) output.
 
-![example VGA output](docs/screenshot.png)
+![example VGA output](screenshot.png)
 
 ## How to test
 
